@@ -1,5 +1,5 @@
 {
-    "name": "Ragaga/yii2-content",
+    "name": "ragaga/yii2-content",
     "description": "Yii 2 content control module with nested set",
     "keywords": ["yii", "yii2", "content"],
     "type": "yii2-extension",
