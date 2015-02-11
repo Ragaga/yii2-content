@@ -1,0 +1,19 @@
+{
+    "name": "Ragaga/yii2-content",
+    "description": "Yii 2 content control module with nested set",
+    "keywords": ["yii", "yii2", "content"],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ragaga",
+            "email": "ragnarek45@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": { "Ragaga\\yii2\\content\\": "" }
+    }
+}
