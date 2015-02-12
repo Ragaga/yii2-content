@@ -1,6 +1,6 @@
 <?php
 
-namespace ragaga\yii2\content\content;
+namespace ragaga\yii2\content;
 
 use yii\base\InvalidConfigException;
 
