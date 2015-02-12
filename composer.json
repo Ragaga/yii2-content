@@ -1,3 +1,4 @@
+
 {
     "name": "ragaga/yii2-content",
     "description": "Yii 2 content control module with nested set",
@@ -11,7 +12,9 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "creocoder/yii2-nested-sets": "*",
+        "moonlandsoft/yii2-tinymce": "*"
     },
     "autoload": {
         "psr-4": { "Ragaga\\yii2\\content\\": "" }

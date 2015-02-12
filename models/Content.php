@@ -1,7 +1,10 @@
 <?php
 
-namespace app\modules\content\models;
+namespace ragaga\yii2\content\models;
 
+use app\extensions\HString;
+use creocoder\nestedsets\NestedSetsBehavior;
+use Faker\Provider\cs_CZ\DateTime;
 use Yii;
 
 /**
@@ -24,6 +27,34 @@ use Yii;
  */
 class Content extends \yii\db\ActiveRecord
 {
+
+    public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_ALL,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors() {
+        return [
+            'tree' => [
+                'class' => NestedSetsBehavior::className(),
+                // 'treeAttribute' => 'tree',
+                 'leftAttribute' => 'tree_left',
+                 'rightAttribute' => 'tree_right',
+                 'depthAttribute' => 'level',
+            ],
+        ];
+    }
+
+    public static function find()
+    {
+        return new ContentQuery(get_called_class());
+    }
+
     /**
      * @inheritdoc
      */
@@ -38,7 +69,8 @@ class Content extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['header', 'text', 'code', 'url', 'tree_left', 'tree_right', 'level'], 'required'],
+            [['header'], 'required'],
+            [['code'], 'unique'],
             [['short_text', 'text', 'code', 'url', 'description'], 'string'],
             [['visible'], 'boolean'],
             [['tree_left', 'tree_right', 'level'], 'integer'],
@@ -68,5 +100,32 @@ class Content extends \yii\db\ActiveRecord
             'create_time' => 'Create Time',
             'update_time' => 'Update Time',
         ];
+    }
+    public function beforeValidate(){
+        $module = Yii::$app->getModule('content');
+        $this->code = $module->rus2trans($this->header);
+        $this->short_text = $module->subString($this->text,$module->shortTextLength);
+        return true;
+    }
+
+    public function beforeSave($insert){
+        parent::beforeSave($insert);
+        if(!$this->isRoot()){
+            $parent = $this->parents(1)->one();
+            $this->url = $parent->url."/".$this->code;
+        }
+        $time = new \DateTime();
+        $time = $time->format('Y-m-d H:i:s');
+        if($this->isNewRecord){
+            $this->create_time = $time;
+            $this->update_time = $time;
+        }else{
+            $this->update_time = $time;
+        }
+        return true;
+    }
+
+    public function getParent(){
+        return $this->parents(1)->one();
     }
 }

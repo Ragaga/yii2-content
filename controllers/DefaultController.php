@@ -1,13 +1,19 @@
 <?php
 
-namespace app\modules\content\controllers;
+namespace ragaga\yii2\content\controllers;
 
 use yii\web\Controller;
+use yii\web\HttpException;
 
 class DefaultController extends Controller
 {
-    public function actionIndex()
+    public function actionShow($code)
     {
-        return $this->render('index');
+        $contentModel= \Yii::$app->getModule("content")->model("Content");
+        $model = $contentModel->find()->where('code=:code',['code'=>$code])->one();
+        if(!$model){
+            throw new HttpException('404',Yii::t('content','Page not found'));
+        }
+        return $this->render('show',['model'=>$model]);
     }
 }
