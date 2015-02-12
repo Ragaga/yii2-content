@@ -1,4 +1,3 @@
-
 <?php
 
 namespace ragaga\yii2\content\controllers;

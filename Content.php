@@ -41,7 +41,7 @@ class Content extends \yii\base\Module
     /**
      * @var string $image_dir - Папка для хранения картинок
      */
-    public $imageDir;
+    public $imageDir = '@app/web/image';
 
     /**
      * @var array Model classes, e.g., ["Content" => "ragnarek\models\Content"]
