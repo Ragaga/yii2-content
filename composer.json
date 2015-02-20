@@ -17,6 +17,6 @@
         "moonlandsoft/yii2-tinymce": "*"
     },
     "autoload": {
-        "psr-4": { "Ragaga\\yii2\\content\\": "" }
+        "psr-4": { "ragaga\\yii2\\content\\": "" }
     }
 }

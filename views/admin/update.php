@@ -50,7 +50,7 @@ if($model->isNewRecord){
         <?= Html::error($model, 'visible'); ?>
 
         <div class="form-group">
-            <?= Html::submitButton($user->isNewRecord ? Yii::t('user', 'Create') : Yii::t('user', 'Update'), ['class' => $user->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? Yii::t('content', 'Create') : Yii::t('content', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
 
         <?php \yii\widgets\ActiveForm::end(); ?>
