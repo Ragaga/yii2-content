@@ -129,7 +129,7 @@ class Content extends \yii\base\Module
     {
         // use single quotes so nothing gets escaped
         return [
-            'Content'       => 'app\modules\content\models\Content',
+            'Content'       => 'ragaga\yii2\content\models\Content',
         ];
     }
 
