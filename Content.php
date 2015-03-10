@@ -39,9 +39,14 @@ class Content extends \yii\base\Module
     public $controllerNamespace = 'app\modules\content\controllers';
 
     /**
-     * @var string $image_dir - Папка для хранения картинок
+     * @var string $imageDir - Папка для хранения картинок
      */
-    public $imageDir = '@app/web/image';
+    public $imageDir;
+
+    /**
+     * @var string $imageUrl - Путь до картинки для веба
+     */
+    public $imageUrl;
 
     /**
      * @var array Model classes, e.g., ["Content" => "ragnarek\models\Content"]
@@ -93,7 +98,7 @@ class Content extends \yii\base\Module
             throw new InvalidConfigException("{$className}: Directory {$this->imageDir} is not exist");
         }
 
-        if(is_writable($this->imageDir)){
+        if(!is_writable($this->imageDir)){
             throw new InvalidConfigException("{$className}: Directory {$this->imageDir} must be writable");
         }
     }

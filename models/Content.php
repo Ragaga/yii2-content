@@ -1,173 +1,131 @@
 <?php
 
-namespace app\modules\content;
+namespace ragaga\yii2\content\models;
 
-use yii\base\InvalidConfigException;
+use app\extensions\HString;
+use creocoder\nestedsets\NestedSetsBehavior;
+use Faker\Provider\cs_CZ\DateTime;
+use Yii;
 
-class Content extends \yii\base\Module
+/**
+ * This is the model class for table "content".
+ *
+ * @property integer $id
+ * @property string $header
+ * @property string $title
+ * @property string $short_text
+ * @property string $text
+ * @property string $code
+ * @property string $url
+ * @property string $description
+ * @property boolean $visible
+ * @property integer $tree_left
+ * @property integer $tree_right
+ * @property integer $level
+ * @property string $create_time
+ * @property string $update_time
+ */
+class Content extends \yii\db\ActiveRecord
 {
 
-    /**
-     * @var array List Chars for russian word
-     */
-    private static $rustable =array(
-        'а' => 'a',   'б' => 'b',   'в' => 'v',
-        'г' => 'g',   'д' => 'd',   'е' => 'e',
-        'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
-        'и' => 'i',   'й' => 'y',   'к' => 'k',
-        'л' => 'l',   'м' => 'm',   'н' => 'n',
-        'о' => 'o',   'п' => 'p',   'р' => 'r',
-        'с' => 's',   'т' => 't',   'у' => 'u',
-        'ф' => 'f',   'х' => 'h',   'ц' => 'c',
-        'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
-        'ь' => '',  'ы' => 'y',   'ъ' => '',
-        'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
-
-        'А' => 'A',   'Б' => 'B',   'В' => 'V',
-        'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-        'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-        'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-        'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-        'О' => 'O',   'П' => 'P',   'Р' => 'R',
-        'С' => 'S',   'Т' => 'T',   'У' => 'U',
-        'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-        'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-        'Ь' => '',  'Ы' => 'Y',   'Ъ' => '',
-        'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
-    );
-
-    public $controllerNamespace = 'app\modules\content\controllers';
-
-    /**
-     * @var string $imageDir - Папка для хранения картинок
-     */
-    public $imageDir;
-
-    /**
-     * @var string $imageUrl - Путь до картинки для веба
-     */
-    public $imageUrl;
-
-    /**
-     * @var array Model classes, e.g., ["Content" => "ragnarek\models\Content"]
-     * Usage:
-     *   $user = Yii::$app->getModule("content")->model("Content", $config);
-     *   (equivalent to)
-     *   $user = new ragnarek\models\Content($config);
-     *
-     * The model classes here will be merged with/override the [[getDefaultModelClasses()|default ones]]
-     */
-    public $modelClasses = [] ;
-
-    /**
-     * @var array Storage for models based on $modelClasses
-     */
-    protected  $_models;
-
-
-    /**
-     * @var int Short text length
-     */
-    public $shortTextLength = 250;
-    public function init()
+    public function transactions()
     {
-        parent::init();
-        $this->checkModuleProperties();
-        $this->modelClasses = array_merge($this->getDefaultModelClasses(), $this->modelClasses);
-        if (empty(\Yii::$app->i18n->translations['content'])) {
-            \Yii::$app->i18n->translations['content'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => __DIR__ . '/messages',
-                //'forceTranslation' => true,
-            ];
-        }
-    }
-
-    /**
-     * Check for valid module properties
-     */
-    protected function checkModuleProperties()
-    {
-        $className = get_called_class();
-        if(!$this->imageDir){
-            throw new InvalidConfigException("{$className}: \$image_dir must be defined");
-        }
-        $this->imageDir = \Yii::getAlias($this->imageDir);
-
-        if(!file_exists($this->imageDir)){
-            throw new InvalidConfigException("{$className}: Directory {$this->imageDir} is not exist");
-        }
-
-        if(!is_writable($this->imageDir)){
-            throw new InvalidConfigException("{$className}: Directory {$this->imageDir} must be writable");
-        }
-    }
-
-    /**
-     * Get object instance of model
-     *
-     * @param string $name
-     * @param array  $config
-     * @return ActiveRecord
-     */
-    public function model($name, $config = [])
-    {
-        // return object if already created
-        if (!empty($this->_models[$name])) {
-            return $this->_models[$name];
-        }
-        // create model and return it
-        $className = $this->modelClasses[ucfirst($name)];
-        $this->_models[$name] = \Yii::createObject(array_merge(["class" => $className], $config));
-        return $this->_models[$name];
-    }
-
-    /**
-     * Get default model classes
-     */
-    protected function getDefaultModelClasses()
-    {
-        // use single quotes so nothing gets escaped
         return [
-            'Content'       => 'app\modules\content\models\Content',
+            self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
     }
 
-
     /**
-     * @param null $str
-     * @param string $spacechar
-     * @return mixed|null|string
+     * @return array
      */
-    public static function rus2trans($str = null, $spacechar = '_')
+    public function behaviors() {
+        return [
+            'tree' => [
+                'class' => NestedSetsBehavior::className(),
+                // 'treeAttribute' => 'tree',
+                 'leftAttribute' => 'tree_left',
+                 'rightAttribute' => 'tree_right',
+                 'depthAttribute' => 'level',
+            ],
+        ];
+    }
+
+    public static function find()
     {
-        if ($str)
-        {
-            $str = strtolower(strtr($str, self::$rustable));
-            $str = preg_replace('~[^-a-z0-9_]+~u', $spacechar, $str);
-            $str = trim($str, $spacechar);
-            return $str;
-        } else {
-            return;
-        }
+        return new ContentQuery(get_called_class());
     }
 
     /**
-     * Substring string by space
-     * @param $str
-     * @param $count
-     * @return string
+     * @inheritdoc
      */
-
-    public function subString($str, $count = 255,$endChars = '...') {
-
-        if (strlen($str)>$count){
-            $substring = mb_substr($str, 0, $count);
-            $lastSpace = mb_strrpos($substring,' ');
-            return mb_substr($substring,0,$lastSpace).$endChars;
-
-        }
-        return $str;
+    public static function tableName()
+    {
+        return 'content';
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['header'], 'required'],
+            [['code'], 'unique'],
+            [['short_text', 'text', 'code', 'url', 'description'], 'string'],
+            [['visible'], 'boolean'],
+            [['tree_left', 'tree_right', 'level'], 'integer'],
+            [['create_time', 'update_time'], 'safe'],
+            [['header', 'title'], 'string', 'max' => 255]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'header' => 'Header',
+            'title' => 'Title',
+            'short_text' => 'Short Text',
+            'text' => 'Text',
+            'code' => 'Code',
+            'url' => 'Url',
+            'description' => 'Description',
+            'visible' => 'Visible',
+            'tree_left' => 'Tree Left',
+            'tree_right' => 'Tree Right',
+            'level' => 'Level',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
+        ];
+    }
+    public function beforeValidate(){
+        $module = Yii::$app->getModule('content');
+        $this->code = $module->rus2trans($this->header);
+        $this->short_text = $module->subString($this->text,$module->shortTextLength);
+        return true;
+    }
+
+    public function beforeSave($insert){
+        parent::beforeSave($insert);
+        if(!$this->isRoot()){
+            $parent = $this->parents(1)->one();
+            $this->url = $parent->url."/".$this->code;
+        }
+        $time = new \DateTime();
+        $time = $time->format('Y-m-d H:i:s');
+        if($this->isNewRecord){
+            $this->create_time = $time;
+            $this->update_time = $time;
+        }else{
+            $this->update_time = $time;
+        }
+        return true;
+    }
+
+    public function getParent(){
+        return $this->parents(1)->one();
+    }
 }
