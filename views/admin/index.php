@@ -29,9 +29,12 @@ if($parent->isRoot()){
     <h1><?= Html::encode($parent->header) ?></h1>
     <p>
         <?= Html::a(Yii::t('content', 'Create {modelClass}', [
-          'modelClass' => 'content',
-        ]), \yii\helpers\Url::toRoute(['update','parent'=>$parent->id]), ['class' => 'btn btn-success']) ?>
+            'modelClass' => 'content',
+        ]), \yii\helpers\Url::toRoute(['create','parent'=>$parent->id]), ['class' => 'btn btn-success']) ?>
     </p>
+
+
+
     <div id="content-list">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
@@ -41,15 +44,15 @@ if($parent->isRoot()){
                     'attribute'=>'header',
                     'format'=>'raw',
                     'value'=>function($data){
-                        return Html::a($data->header,\yii\helpers\Url::to(array('parent'=>$data->id)));
-                    },
+                            return Html::a($data->header,\yii\helpers\Url::toRoute(['/content/default/show','code'=>$data->code]));
+                        },
                 ],
                 'create_time',
                 [
                     'attribute'=>'parent',
                     'value'=>function($data){
-                        return $data->parent->header;
-                    }
+                            return $data->parent->header;
+                        }
                 ],
                 'visible',
                 [
@@ -57,15 +60,16 @@ if($parent->isRoot()){
                     'template' => '{view} {update} {delete} {add}',
                     'buttons' => [
                         'view' => function($url,$model){
-                            return Html::a('<span class="glyphicon glyphicon-eye-open "></span>',
-                                \yii\helpers\Url::toRoute(['/content/default/show','code'=>$model->code]),['target'=>'_blank']
-                            );
-                        },
+                                return Html::a('<span class="glyphicon glyphicon-eye-open "></span>',
+                                    \yii\helpers\Url::toRoute(['/content/default/show','code'=>$model->code])
+                                );
+                            },
                         'add' => function($url, $model, $key){
-                            return Html::a('<span class="glyphicon glyphicon-plus"></span>',
-                                \yii\helpers\Url::toRoute(['/content/admin/update','parent'=>$model->id])
-                            );
-                        }
+                                return Html::a('<span class="glyphicon glyphicon-plus"></span>',
+                                    \yii\helpers\Url::toRoute(['/content/admin/update','parent'=>$model->id])
+                                );
+
+                            }
                     ]
                 ],
             ],
