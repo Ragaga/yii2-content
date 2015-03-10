@@ -3,6 +3,8 @@
 namespace ragaga\yii2\content\controllers;
 
 use ragaga\yii2\content\Content;
+use vova07\imperavi\actions\GetAction;
+
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\Controller;
