@@ -36,7 +36,7 @@ class Content extends \yii\base\Module
         'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
     );
 
-    public $controllerNamespace = 'app\modules\content\controllers';
+    public $controllerNamespace = 'ragaga\yii2\content\controllers';
 
     /**
      * @var string $imageDir - Папка для хранения картинок
@@ -90,7 +90,7 @@ class Content extends \yii\base\Module
     {
         $className = get_called_class();
         if(!$this->imageDir){
-            throw new InvalidConfigException("{$className}: \$image_dir must be defined");
+            throw new InvalidConfigException("{$className}: \$imageDir must be defined");
         }
         $this->imageDir = \Yii::getAlias($this->imageDir);
 
