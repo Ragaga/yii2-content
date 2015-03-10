@@ -10,6 +10,24 @@ use yii\web\Controller;
 class AdminController extends Controller
 {
 
+    public function actions()
+    {
+        return [
+            'images-get' => [
+                'class' => 'vova07\imperavi\actions\GetAction',
+                'url' => \Yii::$app->getModule("content")->imageUrl,
+                'path' => \Yii::$app->getModule("content")->imageDir,
+                'type' => GetAction::TYPE_IMAGES,
+            ],
+            'image-upload' => [
+                'class' => 'vova07\imperavi\actions\UploadAction',
+                'url' => \Yii::$app->getModule("content")->imageUrl,
+                'path' => \Yii::$app->getModule("content")->imageDir,
+            ],
+
+        ];
+    }
+
     public function init()
     {
         // check for admin permission (`tbl_role.can_admin`)
@@ -63,7 +81,7 @@ class AdminController extends Controller
                 }
             }else{
                 if($model->save()){
-                    $this->refresh();
+                    $this->redirect(Url::to(['id'=>$model->id]));
                 }
             }
         }

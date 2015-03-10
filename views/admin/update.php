@@ -2,7 +2,11 @@
 
 use yii\helpers\Html;
 use moonland\tinymce\TinyMCE;
-
+use yii\redactor\widgets\Redactor;
+use mihaildev\elfinder\ElFinder;
+use mihaildev\ckeditor\CKEditor;
+use vova07\imperavi\Widget;
+use yii\helpers\Url;
 $content = Yii::$app->getModule('content')->model('Content');
 
 /**
@@ -35,8 +39,21 @@ if($model->isNewRecord){
         <?php $form = \yii\widgets\ActiveForm::begin(); ?>
         <?= $form->field($model, 'header')->textInput(['maxlength' => 255]) ?>
 
-        <?= $form->field($model, 'text')->widget(TinyMCE::className()) ?>
+        <?= $form->field($model, 'text')->widget(Widget::className(), [
+            'settings' => [
+                'lang' => 'ru',
+                'minHeight' => 200,
+                'imageManagerJson' => Url::toRoute('admin/images-get'),
+                'imageUpload' => Url::toRoute('admin/image-upload'),
+                'plugins' => [
+                    'imagemanager',
+                    'clips',
+                    'fullscreen'
+                ]
+            ]
 
+        ]);
+        ?>
         <?= $form->field($model, 'title')->textInput(['maxlength' => 255]) ?>
 
         <?= $form->field($model, 'description')->textarea(); ?>

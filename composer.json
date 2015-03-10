@@ -14,7 +14,7 @@
     "require": {
         "yiisoft/yii2": "*",
         "creocoder/yii2-nested-sets": "*",
-        "moonlandsoft/yii2-tinymce": "*"
+        "vova07/yii2-imperavi-widget": "*"
     },
     "autoload": {
         "psr-4": { "ragaga\\yii2\\content\\": "" }
